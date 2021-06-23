@@ -10,6 +10,14 @@ inputs:
   body:
     description: 'Optional body for pingviini message, accepts markdown'
     required: false
+  cat_gif:
+    description: 'Optional cat gif image'
+    required: false
+    default: false
+  cat_gif_type:
+    description: 'Optional cat gif image type (fail, success or whatever). '
+    required: false
+    default: fail
 
 runs:
   using: 'node12'
