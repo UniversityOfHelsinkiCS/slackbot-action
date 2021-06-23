@@ -1,0 +1,16 @@
+name: 'Toska slackbot-action'
+description: 'Post messages enriched with toska swag to slack'
+inputs:
+  webhook-url:
+    description: 'Pingviini webhook url for some channel'
+    required: true
+  header:
+    description: 'Header for pingviini message'
+    required: true
+  body:
+    description: 'Optional body for pingviini message, accepts markdown'
+    required: false
+
+runs:
+  using: 'node12'
+  main: 'index.js'
