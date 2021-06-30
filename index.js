@@ -2,11 +2,37 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const axios = require("axios");
 
+const failureEmojis = [
+  "rocket_down",
+  "ripperonis",
+  "roskis",
+  "fine",
+  "lgtm",
+  "tori-peruttu",
+  "työmaa",
+  "eiku",
+  "eitoimi",
+  "tunkki",
+];
+const successEmojis = [
+  "catjam",
+  "dogjam",
+  "rocket",
+  "stonks",
+  "superformula",
+  "minttujamspiral",
+  "mintu",
+  "bonezone",
+  "kurkkumopo",
+  "pp_dance",
+  "pog",
+  "feels_good_man",
+];
+
 const run = async () => {
   try {
     const webhookUrl = core.getInput("webhook-url");
     const messageType = core.getInput("message-type");
-    const emoji = core.getInput("header-emoji");
 
     const repoName = github.context.payload.repository.name;
     const repoUrl = github.context.payload.repository.url;
@@ -19,6 +45,8 @@ const run = async () => {
     };
 
     if (messageType === "deployment") {
+      const emoji =
+        successEmojis[Math.floor(Math.random() * successEmojis.length)];
       message.blocks.push({
         type: "header",
         text: {
@@ -40,6 +68,9 @@ const run = async () => {
         },
       });
     } else if (messageType === "test-failure") {
+      const emoji =
+        failureEmojis[Math.floor(Math.random() * failureEmojis.length)];
+
       message.blocks.push({
         type: "header",
         text: {

@@ -13,10 +13,6 @@ some toska swag based on given inputs.
 
 **Required** Kind of message you want to send. Either 'deployment' or 'test-failure'.
 
-## `header_emoji`
-
-**Required** Optionally choose emoji to append to message header. Defaults to kurkkumopo.
-
 ## Example usage
 
 ```bash
@@ -25,5 +21,4 @@ some toska swag based on given inputs.
   with:
     webhook-url: ${{ secrets.WEBHOOK_URL }}
     message-type: test-failure
-    header-emoji: rocket_down
 ```
