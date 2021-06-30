@@ -20,11 +20,24 @@ be a link in deployment message
 
 ## Example usage
 
+Check which tag version you want to use from
+[releases](https://github.com/UniversityOfHelsinkiCS/slackbot-action/releases). Apply
+that tag version to `uses: UniversityOfHelsinkiCS/slackbot-action@vX.X`. Then use
+workflow as follows:
+
 ```bash
-- name: "Send notification to slack after test failure"
+- name: "Send notification to slack when tests fail"
   uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
   with:
     webhook-url: ${{ secrets.WEBHOOK_URL }}
     message-type: test-failure
-    softa-url: https://opetushallinto.cs.helsinki.fi/suoritustarkistin/
+```
+
+```bash
+- name: "Send notification to slack when deploying"
+  uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+  with:
+    webhook-url: ${{ secrets.WEBHOOK_URL }}
+    message-type: deployment
+    softa-url: https://opetushallinto.cs.helsinki.fi/suoritustarkistin
 ```
