@@ -18,6 +18,11 @@ some toska swag based on given inputs.
 **Required (for deployment)** Url for softa (e.g. suotar staging, oodikone prod), will
 be a link in deployment message
 
+## `deployment-target`
+
+Optionally append deployment target to deployment message, e.g. "Oodikone master started deployment
+to `deployment-target`". If not given, message will just have "Oodikone master started deployment".
+
 ## Example usage
 
 Check which tag version you want to use from
@@ -40,4 +45,5 @@ workflow as follows:
     webhook-url: ${{ secrets.WEBHOOK_URL }}
     message-type: deployment
     softa-url: https://opetushallinto.cs.helsinki.fi/suoritustarkistin
+    deployment-target: production
 ```

@@ -38,7 +38,7 @@ const failureEmojis = [
   "tori-peruttu",
   "tunkki",
   "työmaa",
-  "wat"
+  "wat",
 ];
 
 const successEmojis = [
@@ -79,7 +79,14 @@ const run = async () => {
 
     const repoName = github.context.payload.repository.name;
     const repoUrl = github.context.payload.repository.url;
-    const branchName = github.context.payload.ref.split("/").pop();
+
+    // Check if release or branch
+    const ref = github.context.payload.ref;
+    const branchName = ref ? ref.split("/").pop() : null;
+    const deploymentSource = github.context.payload.release
+      ? `release ${github.context.payload.release.tag_name}`
+      : `${branchName}`;
+
     const commit = github.context.payload.head_commit;
     const committer = commit.committer.username;
 
@@ -91,16 +98,21 @@ const run = async () => {
       const emoji =
         successEmojis[Math.floor(Math.random() * successEmojis.length)];
       const softaUrl = core.getInput("softa-url");
+      const deploymentTarget = core.getInput("deployment-target");
 
       if (!softaUrl) {
         core.setFailed("softa-url must be included when using deployment");
         exit(1);
       }
+      const deploymentText = deploymentTarget
+        ? `${repoName} ${deploymentSource} started deployment to ${deploymentTarget} :${emoji}:`
+        : `${repoName} ${deploymentSource} started deployment :${emoji}:`;
+
       message.blocks.push({
         type: "header",
         text: {
           type: "plain_text",
-          text: `${repoName} ${branchName} started deployment :${emoji}:`,
+          text: `${deploymentText}`,
           emoji: true,
         },
       });

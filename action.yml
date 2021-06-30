@@ -10,6 +10,9 @@ inputs:
   softa-url:
     description: "Url for softa, will be a link in deployment mesage"
     required: false
+  deployment-target:
+    description: "Optionally append deployment target to deployment message"
+    required: false
 
 runs:
   using: "node12"
