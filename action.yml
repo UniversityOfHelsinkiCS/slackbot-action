@@ -7,6 +7,9 @@ inputs:
   message-type:
     description: "Kind of message you want to send."
     required: true
+  softa-url:
+    description: "Url for softa, will be a link in deployment mesage"
+    required: false
 
 runs:
   using: "node12"

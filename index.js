@@ -47,6 +47,12 @@ const run = async () => {
     if (messageType === "deployment") {
       const emoji =
         successEmojis[Math.floor(Math.random() * successEmojis.length)];
+      const softaUrl = core.getInput("softa-url");
+
+      if (!softaUrl) {
+        core.setFailed("softa-url must be included when using deployment");
+        exit(1);
+      }
       message.blocks.push({
         type: "header",
         text: {
@@ -66,6 +72,33 @@ const run = async () => {
           image_url: `https://cataas.com/cat/gif?_=${github.context.runId}`,
           alt_text: "cute cat",
         },
+      });
+      let repoOpenText = `Open ${repoName}`;
+      if (repoName === "suotar") {
+        // add emoji for suotar
+        repoOpenText.concat(" :suotar:");
+      }
+      message.blocks.push({
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: repoOpenText,
+              emoji: true,
+            },
+            url: softaUrl,
+          },
+          {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: "Github",
+            },
+            url: repoUrl,
+          },
+        ],
       });
     } else if (messageType === "test-failure") {
       const emoji =
