@@ -31,7 +31,7 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${commit.url}|Commit> by **${committer}**: ${commit.message}`,
+          text: `<${commit.url}|Commit> by *${committer}*: ${commit.message}`,
         },
       });
     } else if (messageType === "test-failure") {
@@ -47,7 +47,7 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> by **${committer}** failed`,
+          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> by *${committer}* failed`,
         },
       });
       message.blocks.push({
