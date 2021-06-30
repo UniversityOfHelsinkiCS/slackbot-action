@@ -1,24 +1,17 @@
-name: 'Toska slackbot-action'
-description: 'Post messages enriched with toska swag to slack'
+name: "Toska slackbot-action"
+description: "Post messages enriched with toska swag to slack"
 inputs:
   webhook-url:
-    description: 'Pingviini webhook url for some channel'
+    description: "Pingviini webhook url for some channel"
     required: true
-  header:
-    description: 'Header for pingviini message'
+  message-type:
+    description: "Kind of message you want to send."
     required: true
-  body:
-    description: 'Optional body for pingviini message, accepts markdown'
+  header-emoji:
+    description: "choose emoji to append to message header"
     required: false
-  cat_gif:
-    description: 'Optional cat gif image'
-    required: false
-    default: false
-  cat_gif_type:
-    description: 'Optional cat gif image type (fail, success or whatever). '
-    required: false
-    default: fail
+    default: "kurkkumopo"
 
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: "node12"
+  main: "index.js"

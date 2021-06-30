@@ -9,21 +9,21 @@ some toska swag based on given inputs.
 
 **Required** Pingviini webhook url for some channel
 
-## `header`
+## `message-type`
 
-**Required** Header for pingviini message
+**Required** Kind of message you want to send. Either 'deployment' or 'test-failure'.
 
-## `body`
+## `header_emoji`
 
-**Required** Optional body for pingviini message, accepts markdown
+**Required** Optionally choose emoji to append to message header. Defaults to kurkkumopo.
 
 ## Example usage
 
 ```bash
-- name: "Send notification to slack"
-  uses:  UniversityOfHelsinkiCS/slackbot-action@v1.0.1
+- name: "Send notification to slack after test failure"
+  uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
   with:
     webhook-url: ${{ secrets.WEBHOOK_URL }}
-    header: Branch x started auto deployment to production
-    body: "Commit: <https://github.com/UniversityOfHelsinkiCS/reponame/commit/${{ github.sha }}>"
+    message-type: test-failure
+    header-emoji: rocket_down
 ```
