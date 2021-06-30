@@ -33,6 +33,11 @@ const run = async () => {
           type: "mrkdwn",
           text: `<${commit.url}|Commit> by *${committer}*: ${commit.message}`,
         },
+        accessory: {
+          type: "image",
+          image_url: `https://cataas.com/cat/gif?_=${github.context.runId}`,
+          alt_text: "cute cat",
+        },
       });
     } else if (messageType === "test-failure") {
       message.blocks.push({
@@ -48,6 +53,11 @@ const run = async () => {
         text: {
           type: "mrkdwn",
           text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> by *${committer}* failed`,
+        },
+        accessory: {
+          type: "image",
+          image_url: `https://cataas.com/cat/fail?_=${github.context.runId}`,
+          alt_text: "cat failing",
         },
       });
       message.blocks.push({
