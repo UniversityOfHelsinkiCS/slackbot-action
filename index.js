@@ -116,19 +116,12 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> by *${committer}* failed`,
+          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> by *${committer}* failed \n<${commit.url}|Commit>: ${commit.message}`,
         },
         accessory: {
           type: "image",
           image_url: `https://cataas.com/cat/fail?_=${github.context.runId}`,
           alt_text: "cat failing",
-        },
-      });
-      message.blocks.push({
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `<${commit.url}|Commit>: ${commit.message}`,
         },
       });
     } else {
