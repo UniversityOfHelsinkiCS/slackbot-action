@@ -77,33 +77,46 @@ const run = async () => {
     const webhookUrl = core.getInput("webhook-url");
     const messageType = core.getInput("message-type");
 
-    const repoName = github.context.payload.repository.name;
-    const repoUrl = github.context.payload.repository.url;
-
-    // Check if release or branch
-    const ref = github.context.payload.ref;
-    const branchName = ref ? ref.split("/").pop() : null;
-    const deploymentSource = github.context.payload.release
-      ? `release ${github.context.payload.release.tag_name}`
-      : `${branchName}`;
-
-    const commit = github.context.payload.head_commit;
-    const committer = commit.committer.username;
-
     let message = {
       blocks: [],
     };
 
-    if (messageType === "deployment") {
-      const emoji =
-        successEmojis[Math.floor(Math.random() * successEmojis.length)];
-      const softaUrl = core.getInput("softa-url");
-      const deploymentTarget = core.getInput("deployment-target");
+    const repoName = github.context.payload.repository.name;
+    const repoUrl = github.context.payload.repository.url;
 
+    const isRelease = !!github.context.payload.release
+
+    const getDeploymentDetails = isRelease => {
+      if (isRelease) {
+        const release = github.context.release
+        return {
+          deploymentSource: `release ${github.context.payload.release.tag_name}`,
+          infoText: `<${release.html_url}|Release> by *${release.author.login}*: ${release.body}`
+        }
+      } else {
+        const branchName = github.context.payload.ref.split("/").pop();
+        const commit = github.context.payload.head_commit;
+        const committer = commit.committer.username;
+        return {
+          deploymentSource: branchName,
+          infoText: `<${commit.url}|Commit> by *${committer}*: ${commit.message}`
+        }
+      }
+    }
+
+    const { deploymentSource, infoText } = getDeploymentDetails(isRelease)
+
+    if (messageType === "deployment") {
+      const softaUrl = core.getInput("softa-url");
       if (!softaUrl) {
         core.setFailed("softa-url must be included when using deployment");
         exit(1);
       }
+
+      const emoji =
+        successEmojis[Math.floor(Math.random() * successEmojis.length)];
+
+      const deploymentTarget = core.getInput("deployment-target");
       const deploymentText = deploymentTarget
         ? `${repoName} ${deploymentSource} started deployment to ${deploymentTarget} :${emoji}:`
         : `${repoName} ${deploymentSource} started deployment :${emoji}:`;
@@ -112,15 +125,16 @@ const run = async () => {
         type: "header",
         text: {
           type: "plain_text",
-          text: `${deploymentText}`,
+          text: deploymentText,
           emoji: true,
         },
       });
+
       message.blocks.push({
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${commit.url}|Commit> by *${committer}*: ${commit.message}`,
+          text: infoText
         },
         accessory: {
           type: "image",
@@ -128,6 +142,7 @@ const run = async () => {
           alt_text: "cute cat",
         },
       });
+
       let repoOpenText = `Open ${repoName}`;
       if (repoName === "suotar") {
         // add emoji for suotar
@@ -155,9 +170,42 @@ const run = async () => {
           },
         ],
       });
+
+    } else if (messageType === "deployment-failure") {
+      const emoji =
+        failureEmojis[Math.floor(Math.random() * failureEmojis.length)];
+
+      const deploymentText = deploymentTarget
+        ? `Oh no! ${repoName} ${deploymentSource} failed deployment to ${deploymentTarget} :${emoji}:`
+        : `Oh no! ${repoName} ${deploymentSource} failed deployment :${emoji}:`;
+
+      message.blocks.push({
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: deploymentText,
+          emoji: true,
+        },
+      });
+      message.blocks.push({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> }* failed \n ${infoText}`
+        },
+        accessory: {
+          type: "image",
+          image_url: `https://cataas.com/cat/fail?_=${github.context.runId}`,
+          alt_text: "cat failing",
+        },
+      });
     } else if (messageType === "test-failure") {
       const emoji =
         failureEmojis[Math.floor(Math.random() * failureEmojis.length)];
+
+      const branchName = github.context.payload.ref.split("/").pop();
+      const commit = github.context.payload.head_commit;
+      const committer = commit.committer.username;
 
       message.blocks.push({
         type: "header",

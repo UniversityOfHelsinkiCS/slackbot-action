@@ -11,7 +11,7 @@ some toska swag based on given inputs.
 
 ## `message-type`
 
-**Required** Kind of message you want to send. Either 'deployment' or 'test-failure'.
+**Required** Kind of message you want to send. Either 'deployment', 'deployment-failure' or 'test-failure'.
 
 ## `softa-url`
 
