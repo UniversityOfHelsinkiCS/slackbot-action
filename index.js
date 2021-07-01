@@ -2,13 +2,81 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const axios = require("axios");
 
-import { failureEmojis, successEmojis } from "./assets/customEmojis";
+const failureEmojis = [
+  "3am",
+  "alienpls",
+  "atk",
+  "eiku",
+  "eitoimi",
+  "ennauti",
+  "facepalm-picard",
+  "feels_bad_man",
+  "fffuuuu",
+  "fine",
+  "intense-brows",
+  "jaahas",
+  "jaahas-mayhem",
+  "jumalauta",
+  "jäsä",
+  "kuumotus",
+  "lgtm",
+  "mad-mutka-shake",
+  "minttuglitch",
+  "minttujamw",
+  "monkagiga",
+  "notlikebuzz",
+  "pahamintu",
+  "pepe_hands",
+  "pepejam",
+  "ripperonis",
+  "rocket_down",
+  "roskis",
+  "skeletonpls",
+  "thonking-extreme",
+  "thonking-mega-extreme",
+  "thunking",
+  "tori-peruttu",
+  "tunkki",
+  "työmaa",
+  "wat",
+];
+
+const successEmojis = [
+  "15keisaria",
+  "acual_doubt",
+  "acual_parrot",
+  "alienpls",
+  "aw_yeah",
+  "bonezone",
+  "catjam",
+  "dogjam",
+  "feels_good_man",
+  "jesari",
+  "konvehti",
+  "kurkkumopo",
+  "minttujamspiral",
+  "mintu",
+  "nautin",
+  "ok_fidget",
+  "pepejam",
+  "pog",
+  "postimerkki",
+  "pp_dance",
+  "rise",
+  "rocket",
+  "smoothminttujam",
+  "stonks",
+  "superformula",
+  "toimii",
+  "tonkka",
+  "torille",
+];
 
 const getDeploymentDetails = (isRelease) => {
   if (isRelease) {
-    const release = github.context.release;
+    const release = github.context.payload.release;
     return {
-      deploymentSource: `release ${github.context.payload.release.tag_name}`,
+      deploymentSource: `release ${release.tag_name}`,
       infoText: `<${release.html_url}|Release> by *${release.author.login}*: ${release.body}`,
     };
   } else {
@@ -123,6 +191,7 @@ const run = async () => {
     } else if (messageType === "deployment-failure") {
       const emoji = getEmoji({ fail: true });
 
+      const deploymentTarget = core.getInput("deployment-target");
       const deploymentText = deploymentTarget
         ? `Oh no! ${repoName} ${deploymentSource} failed deployment to ${deploymentTarget} :${emoji}:`
         : `Oh no! ${repoName} ${deploymentSource} failed deployment :${emoji}:`;
@@ -139,7 +208,7 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> }* failed \n ${infoText}`,
+          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> failed \n ${infoText}`,
         },
         accessory: getCat({ fail: true }),
       });

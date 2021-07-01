@@ -15,7 +15,7 @@ some toska swag based on given inputs.
 
 ## `softa-url`
 
-**Required (only for deployment)** Url for softa (e.g. suotar staging, oodikone prod), will
+**Required (only for message-type 'deployment')** Url for softa (e.g. suotar staging, oodikone prod), will
 be a link in deployment message
 
 ## `deployment-target`
@@ -45,7 +45,7 @@ workflow as follows:
   uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
   with:
     webhook-url: ${{ secrets.WEBHOOK_URL }}
-    message-type: deployment
+    message-type: deployment-failure
     deployment-target: staging
 ```
 
