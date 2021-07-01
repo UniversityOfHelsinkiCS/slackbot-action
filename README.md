@@ -15,7 +15,7 @@ some toska swag based on given inputs.
 
 ## `softa-url`
 
-**Required (for deployment)** Url for softa (e.g. suotar staging, oodikone prod), will
+**Required (only for deployment)** Url for softa (e.g. suotar staging, oodikone prod), will
 be a link in deployment message
 
 ## `deployment-target`
@@ -31,14 +31,6 @@ that tag version to `uses: UniversityOfHelsinkiCS/slackbot-action@vX.X`. Then us
 workflow as follows:
 
 ```bash
-- name: "Send notification to slack when tests fail"
-  uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
-  with:
-    webhook-url: ${{ secrets.WEBHOOK_URL }}
-    message-type: test-failure
-```
-
-```bash
 - name: "Send notification to slack when deploying"
   uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
   with:
@@ -46,4 +38,21 @@ workflow as follows:
     message-type: deployment
     softa-url: https://opetushallinto.cs.helsinki.fi/suoritustarkistin
     deployment-target: production
+```
+
+```bash
+- name: "Send notification to slack when staging deployment fails"
+  uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+  with:
+    webhook-url: ${{ secrets.WEBHOOK_URL }}
+    message-type: deployment
+    deployment-target: staging
+```
+
+```bash
+- name: "Send notification to slack when tests fail"
+  uses:  UniversityOfHelsinkiCS/slackbot-action@vX.X
+  with:
+    webhook-url: ${{ secrets.WEBHOOK_URL }}
+    message-type: test-failure
 ```
