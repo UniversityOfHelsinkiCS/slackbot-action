@@ -208,7 +208,7 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> failed \n ${infoText}`,
+          text: `<${repoUrl}/actions/runs/${github.context.runId}|Workflow run> failed \n ${infoText}`,
         },
         accessory: getCat({ fail: true }),
       });
@@ -231,7 +231,7 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/runs/${github.context.runId}|Workflow run> by *${committer}* failed \n<${commit.url}|Commit>: ${commit.message}`,
+          text: `<${repoUrl}/actions/runs/${github.context.runId}|Workflow run> by *${committer}* failed \n<${commit.url}|Commit>: ${commit.message}`,
         },
         accessory: getCat({ fail: true }),
       });
