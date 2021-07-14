@@ -23,6 +23,10 @@ be a link in deployment message
 Optionally append deployment target to deployment message, e.g. "Oodikone master started deployment
 to `deployment-target`". If not given, message will just have "Oodikone master started deployment".
 
+## `softa-to-deploy`
+
+Monorepos (e.g. importer, oodikone) usually have different workflows for different services. You can optionally append the name of the service that is going to be deployed to deployment message, e.g. "Oodikone trunk (sis-updater-scheduler) started deployment". If not given, message will just have "Oodikone trunk started deployment".
+
 ## Example usage
 
 Check which tag version you want to use from

@@ -13,6 +13,9 @@ inputs:
   deployment-target:
     description: "Optionally append deployment target to deployment message"
     required: false
+  softa-to-deploy:
+    description: "Optionally append service you're deploying to deployment message"
+    required: false
 
 runs:
   using: "node12"

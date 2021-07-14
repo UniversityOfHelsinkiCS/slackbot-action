@@ -73,18 +73,27 @@ const successEmojis = [
 ];
 
 const getDeploymentDetails = (isRelease) => {
+  const softaToDeploy = core.getInput("softa-to-deploy");
   if (isRelease) {
     const release = github.context.payload.release;
+
+    let deploymentSource = `release ${release.tag_name}`
+    if (softaToDeploy) deploymentSource.concat(` (${softaToDeploy})`)
+
     return {
-      deploymentSource: `release ${release.tag_name}`,
+      deploymentSource,
       infoText: `<${release.html_url}|Release> by *${release.author.login}*: ${release.body}`,
     };
   } else {
     const branchName = github.context.payload.ref.split("/").pop();
     const commit = github.context.payload.head_commit;
     const committer = commit.committer.username;
+
+    let deploymentSource = branchName
+    if (softaToDeploy) deploymentSource.concat(` (${softaToDeploy})`)
+
     return {
-      deploymentSource: branchName,
+      deploymentSource,
       infoText: `<${commit.url}|Commit> by *${committer}*: ${commit.message}`,
     };
   }
