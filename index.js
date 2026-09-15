@@ -1,6 +1,6 @@
-const core = require("@actions/core");
-const github = require("@actions/github");
-const axios = require("axios");
+import { getInput, setFailed } from "@actions/core";
+import { context } from "@actions/github";
+import { post } from "axios";
 
 const failureEmojis = [
   "3am",
@@ -73,9 +73,9 @@ const successEmojis = [
 ];
 
 const getDeploymentDetails = (isRelease) => {
-  const softaToDeploy = core.getInput("softa-to-deploy");
+  const softaToDeploy = getInput("softa-to-deploy");
   if (isRelease) {
-    const release = github.context.payload.release;
+    const release = context.payload.release;
 
     let deploymentSource = `release ${release.tag_name}`
     if (softaToDeploy) deploymentSource.concat(` (${softaToDeploy})`)
@@ -85,8 +85,8 @@ const getDeploymentDetails = (isRelease) => {
       infoText: `<${release.html_url}|Release> by *${release.author.login}*: ${release.body}`,
     };
   } else {
-    const branchName = github.context.payload.ref.split("/").pop();
-    const commit = github.context.payload.head_commit;
+    const branchName = context.payload.ref.split("/").pop();
+    const commit = context.payload.head_commit;
     const committer = commit.committer.username;
 
     let deploymentSource = branchName
@@ -103,12 +103,12 @@ const getCat = ({ fail }) => {
   return fail
     ? {
         type: "image",
-        image_url: `https://cataas.com/cat/fail?_=${github.context.runId}`,
+        image_url: `https://cataas.com/cat/fail?_=${context.runId}`,
         alt_text: "cat failing",
       }
     : {
         type: "image",
-        image_url: `https://cataas.com/cat/gif?_=${github.context.runId}`,
+        image_url: `https://cataas.com/cat/gif?_=${context.runId}`,
         alt_text: "cute cat",
       };
 };
@@ -121,25 +121,25 @@ const getEmoji = ({ fail }) => {
 
 const run = async () => {
   try {
-    const webhookUrl = core.getInput("webhook-url");
-    const messageType = core.getInput("message-type");
+    const webhookUrl = getInput("webhook-url");
+    const messageType = getInput("message-type");
 
     let message = {
       blocks: [],
     };
 
-    const repoName = github.context.payload.repository.name;
-    const repoUrl = github.context.payload.repository.url;
+    const repoName = context.payload.repository.name;
+    const repoUrl = context.payload.repository.url;
 
-    const isRelease = !!github.context.payload.release;
+    const isRelease = !!context.payload.release;
 
     const { deploymentSource, infoText } = getDeploymentDetails(isRelease);
 
     if (messageType === "deployment") {
-      const softaUrl = core.getInput("softa-url");
+      const softaUrl = getInput("softa-url");
 
       if (!softaUrl) {
-        core.setFailed(
+        setFailed(
           "softa-url must be included when using message-type 'deployment'"
         );
         exit(1);
@@ -147,7 +147,7 @@ const run = async () => {
 
       const emoji = getEmoji({ fail: false });
 
-      const deploymentTarget = core.getInput("deployment-target");
+      const deploymentTarget = getInput("deployment-target");
       const deploymentText = deploymentTarget
         ? `${repoName} ${deploymentSource} started deployment to ${deploymentTarget} :${emoji}:`
         : `${repoName} ${deploymentSource} started deployment :${emoji}:`;
@@ -200,7 +200,7 @@ const run = async () => {
     } else if (messageType === "deployment-failure") {
       const emoji = getEmoji({ fail: true });
 
-      const deploymentTarget = core.getInput("deployment-target");
+      const deploymentTarget = getInput("deployment-target");
       const deploymentText = deploymentTarget
         ? `Oh no! ${repoName} ${deploymentSource} failed deployment to ${deploymentTarget} :${emoji}:`
         : `Oh no! ${repoName} ${deploymentSource} failed deployment :${emoji}:`;
@@ -217,15 +217,15 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/actions/runs/${github.context.runId}|Workflow run> failed \n ${infoText}`,
+          text: `<${repoUrl}/actions/runs/${context.runId}|Workflow run> failed \n ${infoText}`,
         },
         accessory: getCat({ fail: true }),
       });
     } else if (messageType === "test-failure") {
       const emoji = getEmoji({ fail: true });
 
-      const branchName = github.context.payload.ref.split("/").pop();
-      const commit = github.context.payload.head_commit;
+      const branchName = context.payload.ref.split("/").pop();
+      const commit = context.payload.head_commit;
       const committer = commit.committer.username;
 
       message.blocks.push({
@@ -240,18 +240,18 @@ const run = async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `<${repoUrl}/actions/runs/${github.context.runId}|Workflow run> by *${committer}* failed \n<${commit.url}|Commit>: ${commit.message}`,
+          text: `<${repoUrl}/actions/runs/${context.runId}|Workflow run> by *${committer}* failed \n<${commit.url}|Commit>: ${commit.message}`,
         },
         accessory: getCat({ fail: true }),
       });
     } else {
-      core.setFailed(`${messageType} not accepted message type`);
+      setFailed(`${messageType} not accepted message type`);
       exit(1);
     }
 
-    await axios.post(webhookUrl, JSON.stringify(message));
+    await post(webhookUrl, JSON.stringify(message));
   } catch (error) {
-    core.setFailed(error.message);
+    setFailed(error.message);
   }
 };
 
