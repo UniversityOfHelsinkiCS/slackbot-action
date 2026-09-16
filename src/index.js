@@ -1,6 +1,6 @@
 import { getInput, setFailed } from "@actions/core";
 import { context } from "@actions/github";
-import { post } from "axios";
+import axios from "axios";
 
 const failureEmojis = [
   "3am",
@@ -249,7 +249,7 @@ const run = async () => {
       exit(1);
     }
 
-    await post(webhookUrl, JSON.stringify(message));
+    await axios.post(webhookUrl, JSON.stringify(message));
   } catch (error) {
     setFailed(error.message);
   }
