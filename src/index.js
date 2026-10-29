@@ -121,6 +121,8 @@ const getEmoji = ({ fail }) => {
 
 const run = async () => {
   try {
+    // Too see which node is build
+    console.log(process.versions.node)
     const webhookUrl = getInput("webhook-url");
     const messageType = getInput("message-type");
 
